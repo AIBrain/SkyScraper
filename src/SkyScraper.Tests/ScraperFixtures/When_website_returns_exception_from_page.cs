@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
 
     [TestFixture]
     internal class When_website_returns_exception_from_page : ConcernForScraper {
-        private const string Page = @"<html><a href=""page1"">link1</a></html>";
+        private const String Page = @"<html><a href=""page1"">link1</a></html>";
         private readonly List< HtmlDoc > _htmlDocs = new List< HtmlDoc >();
         private bool error;
         private Uri uri;
