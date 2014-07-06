@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using FluentAssertions;
-using NUnit.Framework;
 using SkyScraper.Observers.ConsoleWriter;
 using System.Linq;
 
 namespace SkyScraper.IntegrationTests.TestWebsiteFixtures
 {
+    using FluentAssertions;
+    using NUnit.Framework;
+
     [TestFixture]
     class When_running_against_test_website_with_agent_goodbot
     {

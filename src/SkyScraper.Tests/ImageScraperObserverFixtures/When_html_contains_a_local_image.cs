@@ -1,10 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
+    using NSubstitute;
+    using NUnit.Framework;
+
     [TestFixture]
     class When_html_contains_a_local_image : ConcernForImageScraperObserverOnNext
     {

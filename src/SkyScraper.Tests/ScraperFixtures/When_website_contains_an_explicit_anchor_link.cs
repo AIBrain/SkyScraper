@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {

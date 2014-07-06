@@ -1,8 +1,9 @@
-﻿using NSubstitute;
-using SkyScraper.Observers.ImageScraper;
+﻿using SkyScraper.Observers.ImageScraper;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
+    using NSubstitute;
+
     abstract class ConcernForImageScraperObserverOnNext : ConcernFor<ImageScraperObserver>
     {
         protected IFileWriter FileWriter;

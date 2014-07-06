@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace SkyScraper.Observers.ImageScraper
 {
     public interface IFileWriter

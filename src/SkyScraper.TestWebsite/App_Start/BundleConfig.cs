@@ -1,7 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
-
-namespace SkyScraper.TestWebsite
+﻿namespace SkyScraper.TestWebsite
 {
     public class BundleConfig
     {

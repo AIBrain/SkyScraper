@@ -1,7 +1,7 @@
-using NUnit.Framework;
-
 namespace SkyScraper.Tests
 {
+    using NUnit.Framework;
+
     abstract class ConcernFor<T> where T : class
     {
         protected T SUT;

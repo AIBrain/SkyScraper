@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using NUnit.Framework;
 
 namespace SkyScraper.IntegrationTests.TestWebsiteFixtures
 {
+    using NUnit.Framework;
+
     [SetUpFixture]
     public class SetUpFixture
     {

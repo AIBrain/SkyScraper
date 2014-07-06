@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {

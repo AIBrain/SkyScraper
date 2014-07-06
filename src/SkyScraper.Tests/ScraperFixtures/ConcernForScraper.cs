@@ -1,4 +1,3 @@
-using NSubstitute;
 using System;
 
 namespace SkyScraper.Tests.ScraperFixtures

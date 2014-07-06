@@ -1,5 +1,4 @@
 using System.IO;
-using NUnit.Framework;
 using SkyScraper.Observers.ConsoleWriter;
 using System;
 using System.Diagnostics;
@@ -7,6 +6,8 @@ using SkyScraper.Observers.ImageScraper;
 
 namespace SkyScraper.IntegrationTests
 {
+    using NUnit.Framework;
+
     [TestFixture]
     [Explicit]
     class When_running_against_a_real_website

@@ -1,6 +1,4 @@
 ﻿using System;
-using FluentAssertions;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.RobotsFixtures
 {

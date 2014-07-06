@@ -1,10 +1,11 @@
-using CsQuery;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
 namespace SkyScraper.Observers.ImageScraper
 {
+    using CsQuery;
+
     public class ImageScraperObserver : IObserver<HtmlDoc>
     {
         readonly ConcurrentDictionary<string, string> downloadedImages = new ConcurrentDictionary<string, string>();

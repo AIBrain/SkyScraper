@@ -1,6 +1,3 @@
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;

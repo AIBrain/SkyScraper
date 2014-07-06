@@ -1,6 +1,4 @@
 using System;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {

@@ -5,11 +5,11 @@ namespace SkyScraper
 {
     public class ScrapedUrisDictionary : IScrapedUris
     {
-        readonly ConcurrentDictionary<string, string> scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
+        readonly ConcurrentDictionary<string, string> _scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
 
         public bool TryAdd(Uri uri)
         {
-            return scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null);
+            return this._scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null);
         }
     }
 }

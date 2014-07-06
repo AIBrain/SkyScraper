@@ -1,4 +1,3 @@
-using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace SkyScraper
 {
+    using CsQuery;
+
     public class Scraper : IScraper, IObservable<HtmlDoc>
     {
         readonly IHttpClient httpClient;

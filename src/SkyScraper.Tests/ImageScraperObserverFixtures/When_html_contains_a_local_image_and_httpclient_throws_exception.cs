@@ -1,7 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Web.WebPages.OAuth;
-using SkyScraper.TestWebsite.Models;
-
-namespace SkyScraper.TestWebsite
+﻿namespace SkyScraper.TestWebsite
 {
     public static class AuthConfig
     {
