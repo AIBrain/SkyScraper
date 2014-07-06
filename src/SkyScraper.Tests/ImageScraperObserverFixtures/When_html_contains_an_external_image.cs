@@ -2,6 +2,9 @@ using System;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
+    using NSubstitute;
+    using NUnit.Framework;
+
     [TestFixture]
     class When_html_contains_an_external_image : ConcernForImageScraperObserverOnNext
     {

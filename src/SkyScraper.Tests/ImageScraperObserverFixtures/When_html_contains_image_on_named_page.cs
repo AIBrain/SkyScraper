@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
+    using NSubstitute;
+    using NUnit.Framework;
+
     [TestFixture]
     class When_html_contains_image_on_named_page : ConcernForImageScraperObserverOnNext
     {

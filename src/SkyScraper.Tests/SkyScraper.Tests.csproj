@@ -108,6 +108,7 @@
     <Compile Include="ScraperFixtures\When_website_returns_exception_from_page.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
