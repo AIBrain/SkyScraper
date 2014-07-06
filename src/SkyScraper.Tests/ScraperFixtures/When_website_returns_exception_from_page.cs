@@ -42,7 +42,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
 
         protected override Scraper CreateClassUnderTest() {
             this.SUT = base.CreateClassUnderTest();
-            this.SUT.OnHttpClientException += delegate { this.error = true; };
+            this.SUT.OnHttpClientException += obj => this.error = true;
             this.SUT.OnScrape += x => this.uri = x;
             return this.SUT;
         }

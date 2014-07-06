@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SkyScraper.TestWebsite.Models
 {
+    using System.Data.Entity;
+
     public class UsersContext : DbContext
     {
         public UsersContext()

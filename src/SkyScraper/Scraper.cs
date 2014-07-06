@@ -11,7 +11,7 @@
 // 
 // Usage of the source code or compiled binaries is AS-IS.
 // 
-// "SkyScraper/Scraper.cs" was last cleaned by Rick on 2014/07/06 at 4:04 PM
+// "SkyScraper/Scraper.cs" was last cleaned by Rick on 2014/07/06 at 4:09 PM
 #endregion
 
 namespace SkyScraper {
@@ -24,14 +24,14 @@ namespace SkyScraper {
     using CsQuery;
 
     public class Scraper : IScraper, IObservable<HtmlDoc> {
-        private readonly IHttpClient httpClient;
-        private readonly IScrapedUris scrapedUris;
-        private Uri baseUri;
-        private DateTime? endDateTime;
+        private readonly IHttpClient _httpClient;
+        private readonly IScrapedUris _scrapedUris;
+        private Uri _baseUri;
+        private DateTime? _endDateTime;
 
         public Scraper( IHttpClient httpClient, IScrapedUris scrapedUris ) {
-            this.httpClient = httpClient;
-            this.scrapedUris = scrapedUris;
+            this._httpClient = httpClient;
+            this._scrapedUris = scrapedUris;
             this.Observers = new List<IObserver<HtmlDoc>>();
         }
 
@@ -39,7 +39,7 @@ namespace SkyScraper {
         public event Action<Exception> OnHttpClientException = delegate { };
 
         public List<IObserver<HtmlDoc>> Observers { get; set; }
-        public TimeSpan TimeOut { set { this.endDateTime = DateTimeProvider.UtcNow + value; } }
+        public TimeSpan TimeOut { set { this._endDateTime = DateTimeProvider.UtcNow + value; } }
         public int? MaxDepth { private get; set; }
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
@@ -52,12 +52,12 @@ namespace SkyScraper {
         }
 
         public async Task Scrape( Uri uri ) {
-            this.baseUri = uri;
+            this._baseUri = uri;
 
             if ( !this.DisableRobotsProtocol ) {
                 var robotsUri = new Uri( uri.GetLeftPart( UriPartial.Authority ) + "/robots.txt" );
-                var robotsTxt = await this.httpClient.GetString( robotsUri );
-                Robots.Load( robotsTxt, this.httpClient.UserAgentName );
+                var robotsTxt = await this._httpClient.GetString( robotsUri );
+                Robots.Load( robotsTxt, this._httpClient.UserAgentName );
             }
             this.DoScrape( uri )
                 .Wait();
@@ -65,10 +65,10 @@ namespace SkyScraper {
 
         private async Task DoScrape( Uri uri ) {
             this.OnScrape( uri );
-            if ( this.endDateTime.HasValue && DateTimeProvider.UtcNow > this.endDateTime ) {
+            if ( this._endDateTime.HasValue && DateTimeProvider.UtcNow > this._endDateTime ) {
                 return;
             }
-            if ( !this.scrapedUris.TryAdd( uri ) ) {
+            if ( !this._scrapedUris.TryAdd( uri ) ) {
                 return;
             }
             if ( !this.DisableRobotsProtocol && !Robots.PathIsAllowed( uri.PathAndQuery ) ) {
@@ -78,7 +78,7 @@ namespace SkyScraper {
                 Uri = uri
             };
             try {
-                htmlDoc.Html = await this.httpClient.GetString( uri );
+                htmlDoc.Html = await this._httpClient.GetString( uri );
             }
             catch ( Exception exception ) {
                 this.OnHttpClientException( exception );
@@ -104,8 +104,8 @@ namespace SkyScraper {
             var localLinks = this.LocalLinks( links )
                                  .Select( x => this.NormalizeLink( x, pageBaseUri ) )
                                  .Where( x => x.ToString()
-                                               .StartsWith( this.baseUri.ToString() ) && x.ToString()
-                                                                                          .Length <= 2048 );
+                                               .StartsWith( this._baseUri.ToString() ) && x.ToString()
+                                                                                           .Length <= 2048 );
             if ( this.IncludeLinks != null ) {
                 localLinks = localLinks.Where( x => this.IncludeLinks.IsMatch( x.ToString() ) );
             }
@@ -122,9 +122,9 @@ namespace SkyScraper {
 
         private Uri NormalizeLink( string link, Uri pageBaseUri ) {
             if ( link.StartsWith( "/" ) ) {
-                return new Uri( this.baseUri, link );
+                return new Uri( this._baseUri, link );
             }
-            if ( link.StartsWith( this.baseUri.ToString() ) ) {
+            if ( link.StartsWith( this._baseUri.ToString() ) ) {
                 return new Uri( link );
             }
             return new Uri( pageBaseUri, link );
@@ -136,7 +136,7 @@ namespace SkyScraper {
 
         private IEnumerable<string> LocalLinks( IEnumerable<string> links ) {
             return links.Select( WebUtility.HtmlDecode )
-                        .Where( s => s.LinkIsLocal( this.baseUri.ToString() ) && s.LinkDoesNotContainAnchor() );
+                        .Where( s => s.LinkIsLocal( this._baseUri.ToString() ) && s.LinkDoesNotContainAnchor() );
         }
 
         private class Unsubscriber : IDisposable {
