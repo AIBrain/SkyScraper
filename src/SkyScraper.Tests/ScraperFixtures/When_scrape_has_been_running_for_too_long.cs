@@ -18,6 +18,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_scrape_has_been_running_for_too_long : ConcernForScraper {

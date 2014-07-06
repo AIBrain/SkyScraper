@@ -19,6 +19,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_contains_a_link_longer_than_2048_characters : ConcernForScraper {

@@ -131,26 +131,26 @@ namespace SkyScraper {
         }
 
         private void NotifyObservers( HtmlDoc htmlDoc ) {
-            this.Observers.ForEach( x => x.OnNext( htmlDoc ) );
+            this.Observers.ForEach( observer => observer.OnNext( htmlDoc ) );
         }
 
         private IEnumerable<string> LocalLinks( IEnumerable<string> links ) {
             return links.Select( WebUtility.HtmlDecode )
-                        .Where( x => x.LinkIsLocal( this.baseUri.ToString() ) && x.LinkDoesNotContainAnchor() );
+                        .Where( s => s.LinkIsLocal( this.baseUri.ToString() ) && s.LinkDoesNotContainAnchor() );
         }
 
         private class Unsubscriber : IDisposable {
-            private readonly IObserver<HtmlDoc> observer;
-            private readonly List<IObserver<HtmlDoc>> observers;
+            private readonly IObserver<HtmlDoc> _observer;
+            private readonly List<IObserver<HtmlDoc>> _observers;
 
             public Unsubscriber( List<IObserver<HtmlDoc>> observers, IObserver<HtmlDoc> observer ) {
-                this.observers = observers;
-                this.observer = observer;
+                this._observers = observers;
+                this._observer = observer;
             }
 
             public void Dispose() {
-                if ( this.observer != null && this.observers.Contains( this.observer ) ) {
-                    this.observers.Remove( this.observer );
+                if ( this._observer != null && this._observers.Contains( this._observer ) ) {
+                    this._observers.Remove( this._observer );
                 }
             }
         }
