@@ -26,7 +26,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_robots_protocol_enabled_and_link_is_disallowed_and_scraper_is_badbot : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private String page;
 
         protected override void Context() {
             base.Context();

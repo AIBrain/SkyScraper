@@ -15,17 +15,18 @@
 #endregion
 
 namespace SkyScraper.Observers.ImageScraper {
+    using System;
     using System.IO;
 
     public class FileWriter : IFileWriter {
-        private readonly DirectoryInfo directoryInfo;
+        private readonly DirectoryInfo _directoryInfo;
 
         public FileWriter( DirectoryInfo directoryInfo ) {
-            this.directoryInfo = directoryInfo;
+            this._directoryInfo = directoryInfo;
         }
 
-        public void Write( string fileName, byte[] bytes ) {
-            fileName = Path.Combine( this.directoryInfo.FullName, fileName );
+        public void Write( String fileName, byte[] bytes ) {
+            fileName = Path.Combine( this._directoryInfo.FullName, fileName );
             using ( var fileStream = File.OpenWrite( fileName ) ) {
                 fileStream.Write( bytes, 0, bytes.Length );
             }

@@ -15,6 +15,7 @@
 #endregion
 
 namespace SkyScraper.Tests.RobotsFixtures {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using FluentAssertions;
@@ -24,9 +25,9 @@ namespace SkyScraper.Tests.RobotsFixtures {
     internal class When_reading_example2_robots_txt {
         [Test]
         public void Then_disallows_should_be_respected() {
-            const string robotsTxt = "RobotsFixtures\\example2.txt";
+            const String robotsTxt = "RobotsFixtures\\example2.txt";
             Robots.Load( File.ReadAllText( robotsTxt ) );
-            var lines = new Queue< string >( File.ReadAllLines( robotsTxt ) );
+            var lines = new Queue< String >( File.ReadAllLines( robotsTxt ) );
             while ( lines.Peek() != "User-agent: *" ) {
                 lines.Dequeue();
             }
@@ -34,7 +35,7 @@ namespace SkyScraper.Tests.RobotsFixtures {
             while ( !lines.Peek()
                           .StartsWith( "#" ) ) {
                 var line = lines.Dequeue();
-                if ( string.IsNullOrEmpty( line ) ) {
+                if ( String.IsNullOrEmpty( line ) ) {
                     continue;
                 }
                 var rule = line.Split( ' ' )[ 1 ].Replace( "*", "foo" );

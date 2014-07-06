@@ -83,7 +83,7 @@ namespace SkyScraper {
             catch ( Exception exception ) {
                 this.OnHttpClientException( exception );
             }
-            if ( string.IsNullOrEmpty( htmlDoc.Html ) ) {
+            if ( String.IsNullOrEmpty( htmlDoc.Html ) ) {
                 return;
             }
             if ( !( this.ObserverLinkFilter != null && !this.ObserverLinkFilter.IsMatch( uri.ToString() ) ) ) {
@@ -120,7 +120,7 @@ namespace SkyScraper {
             Task.WaitAll( tasks );
         }
 
-        private Uri NormalizeLink( string link, Uri pageBaseUri ) {
+        private Uri NormalizeLink( String link, Uri pageBaseUri ) {
             if ( link.StartsWith( "/" ) ) {
                 return new Uri( this._baseUri, link );
             }
@@ -134,7 +134,7 @@ namespace SkyScraper {
             this.Observers.ForEach( observer => observer.OnNext( htmlDoc ) );
         }
 
-        private IEnumerable< string > LocalLinks( IEnumerable< string > links ) {
+        private IEnumerable< String > LocalLinks( IEnumerable< String > links ) {
             return links.Select( WebUtility.HtmlDecode )
                         .Where( s => s.LinkIsLocal( this._baseUri.ToString() ) && s.LinkDoesNotContainAnchor() );
         }

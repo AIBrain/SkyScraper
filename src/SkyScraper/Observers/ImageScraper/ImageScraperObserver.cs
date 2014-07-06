@@ -21,13 +21,13 @@ namespace SkyScraper.Observers.ImageScraper {
     using CsQuery;
 
     public class ImageScraperObserver : IObserver< HtmlDoc > {
-        private readonly ConcurrentDictionary< string, string > downloadedImages = new ConcurrentDictionary< string, string >();
-        private readonly IFileWriter fileWriter;
-        private readonly IHttpClient httpClient;
+        private readonly ConcurrentDictionary< String, String > _downloadedImages = new ConcurrentDictionary< String, String >();
+        private readonly IFileWriter _fileWriter;
+        private readonly IHttpClient _httpClient;
 
         public ImageScraperObserver( IHttpClient httpClient, IFileWriter fileWriter ) {
-            this.httpClient = httpClient;
-            this.fileWriter = fileWriter;
+            this._httpClient = httpClient;
+            this._fileWriter = fileWriter;
         }
 
         public void OnNext( HtmlDoc htmlDoc ) {
@@ -52,11 +52,11 @@ namespace SkyScraper.Observers.ImageScraper {
 
         private async void DownloadImage( Uri uri ) {
             var fileName = uri.Segments.Last();
-            if ( !this.downloadedImages.TryAdd( fileName, null ) ) {
+            if ( !this._downloadedImages.TryAdd( fileName, null ) ) {
                 return;
             }
-            var imgBytes = await this.httpClient.GetByteArray( uri );
-            this.fileWriter.Write( fileName, imgBytes );
+            var imgBytes = await this._httpClient.GetByteArray( uri );
+            this._fileWriter.Write( fileName, imgBytes );
         }
     }
 }

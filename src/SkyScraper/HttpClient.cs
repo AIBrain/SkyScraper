@@ -24,7 +24,7 @@ namespace SkyScraper {
 
     public class HttpClient : IHttpClient {
         private readonly System.Net.Http.HttpClient httpClient;
-        private string userAgentName;
+        private String userAgentName;
 
         public HttpClient() {
             this.httpClient = new System.Net.Http.HttpClient( new HttpClientHandler {
@@ -34,17 +34,17 @@ namespace SkyScraper {
                                                                                         };
         }
 
-        public string UserAgentName {
+        public String UserAgentName {
             set {
                 this.userAgentName = value;
-                const string name = "User-Agent";
+                const String name = "User-Agent";
                 this.httpClient.DefaultRequestHeaders.Remove( name );
                 this.httpClient.DefaultRequestHeaders.Add( name, value );
             }
             get { return this.userAgentName; }
         }
 
-        public async Task< string > GetString( Uri uri ) {
+        public async Task< String > GetString( Uri uri ) {
             var bytes = await this.Get( uri, x => x.ReadAsByteArrayAsync() );
             return bytes == null ? null : Encoding.UTF8.GetString( bytes );
         }

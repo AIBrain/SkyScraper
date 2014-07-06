@@ -20,9 +20,9 @@ namespace SkyScraper {
     using System.Threading.Tasks;
 
     public interface IHttpClient {
-        string UserAgentName { set; get; }
+        String UserAgentName { set; get; }
 
-        Task< string > GetString( Uri uri );
+        Task< String > GetString( Uri uri );
 
         Task< byte[] > GetByteArray( Uri uri );
 

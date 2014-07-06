@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_scrape_has_been_running_for_too_long : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private String page;
 
         protected override Scraper CreateClassUnderTest() {
             DateTimeProvider.UtcNow = DateTime.Today;

@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_website_contains_an_html_encoded_link : ConcernForScraper {
         private readonly List< HtmlDoc > _htmlDocs = new List< HtmlDoc >();
-        private string _page;
+        private String _page;
 
         protected override void Context() {
             base.Context();

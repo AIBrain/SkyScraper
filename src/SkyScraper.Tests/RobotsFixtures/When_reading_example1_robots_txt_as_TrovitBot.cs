@@ -15,6 +15,7 @@
 #endregion
 
 namespace SkyScraper.Tests.RobotsFixtures {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using FluentAssertions;
@@ -24,9 +25,9 @@ namespace SkyScraper.Tests.RobotsFixtures {
     internal class When_reading_example1_robots_txt_as_TrovitBot {
         [Test]
         public void Then_disallows_should_be_respected() {
-            const string robotsTxt = "RobotsFixtures\\example1.txt";
+            const String robotsTxt = "RobotsFixtures\\example1.txt";
             Robots.Load( File.ReadAllText( robotsTxt ), "TrovitBot" );
-            var lines = new Queue< string >( File.ReadAllLines( robotsTxt ) );
+            var lines = new Queue< String >( File.ReadAllLines( robotsTxt ) );
             while ( lines.Peek() != "User-agent: *" ) {
                 lines.Dequeue();
             }

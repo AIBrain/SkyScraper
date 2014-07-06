@@ -29,7 +29,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
         protected override void Context() {
             base.Context();
             this.Uri = new Uri( "http://test/foo/page1" );
-            const string page = @"<html>
+            const String page = @"<html>
                          <a href=""/bar"">link1</a>
                          </html>";
             this.HttpClient.GetString( this.Uri )

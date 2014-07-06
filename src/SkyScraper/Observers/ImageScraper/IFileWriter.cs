@@ -15,7 +15,9 @@
 #endregion
 
 namespace SkyScraper.Observers.ImageScraper {
+    using System;
+
     public interface IFileWriter {
-        void Write( string fileName, byte[] bytes );
+        void Write( String fileName, byte[] bytes );
     }
 }

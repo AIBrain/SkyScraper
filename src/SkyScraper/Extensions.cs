@@ -18,7 +18,7 @@ namespace SkyScraper {
     using System;
 
     public static class Extensions {
-        public static bool LinkIsLocal( this string link, string baseUri ) {
+        public static bool LinkIsLocal( this String link, String baseUri ) {
             if ( Uri.IsWellFormedUriString( link, UriKind.Absolute ) ) {
                 if ( !link.StartsWith( baseUri ) || link.StartsWith( "//" ) ) {
                     return false;
@@ -27,7 +27,7 @@ namespace SkyScraper {
             return Uri.IsWellFormedUriString( link, UriKind.Relative ) || link.StartsWith( baseUri );
         }
 
-        public static bool LinkDoesNotContainAnchor( this string str ) {
+        public static bool LinkDoesNotContainAnchor( this String str ) {
             return !str.Contains( "#" );
         }
     }

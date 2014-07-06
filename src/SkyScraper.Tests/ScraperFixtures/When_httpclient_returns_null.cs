@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_httpclient_returns_null : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private String page;
 
         protected override void Context() {
             base.Context();

@@ -26,19 +26,19 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_website_contains_a_link_longer_than_2048_characters : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string link;
-        private string page;
+        private String link;
+        private String page;
 
         protected override void Context() {
             base.Context();
             this.Uri = new Uri( "http://test" );
             this.link = Enumerable.Repeat( "a", 2048 )
-                                  .Aggregate( string.Empty, ( s, s1 ) => s += s1 );
+                                  .Aggregate( String.Empty, ( s, s1 ) => s += s1 );
             this.page = @"<html>
                          <a>link1</a>
                          <a href=""{0}"">link1</a>
                          </html>";
-            this.page = string.Format( this.page, this.link );
+            this.page = String.Format( this.page, this.link );
             this.HttpClient.GetString( this.Uri )
                 .Returns( Task.Factory.StartNew( () => this.page ) );
             this.HttpClient.GetString( Arg.Is< Uri >( x => x != this.Uri ) )

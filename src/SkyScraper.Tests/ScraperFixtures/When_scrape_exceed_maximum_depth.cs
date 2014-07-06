@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_scrape_exceed_maximum_depth : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private String page;
 
         protected override Scraper CreateClassUnderTest() {
             this.SUT = base.CreateClassUnderTest();

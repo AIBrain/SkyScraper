@@ -19,7 +19,7 @@ namespace SkyScraper {
     using System.Collections.Concurrent;
 
     public class ScrapedUrisDictionary : IScrapedUris {
-        private readonly ConcurrentDictionary< string, string > _scrapedHtmlDocs = new ConcurrentDictionary< string, string >();
+        private readonly ConcurrentDictionary< String, String > _scrapedHtmlDocs = new ConcurrentDictionary< String, String >();
 
         public bool TryAdd( Uri uri ) {
             return this._scrapedHtmlDocs.TryAdd( uri.PathAndQuery, null );

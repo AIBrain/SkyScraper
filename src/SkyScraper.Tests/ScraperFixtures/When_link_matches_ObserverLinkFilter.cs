@@ -25,7 +25,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     [TestFixture]
     internal class When_link_matches_ObserverLinkFilter : ConcernForScraper {
         private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private String page;
         private IObserver< HtmlDoc > observer;
 
         protected override Scraper CreateClassUnderTest() {

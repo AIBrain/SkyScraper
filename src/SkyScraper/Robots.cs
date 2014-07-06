@@ -22,23 +22,23 @@ namespace SkyScraper {
     using System.Text.RegularExpressions;
 
     public static class Robots {
-        private const string Allow = @"^Allow:\s";
-        private const string Disallow = @"^Disallow:\s";
+        private const String Allow = @"^Allow:\s";
+        private const String Disallow = @"^Disallow:\s";
         private static readonly Regex AllowRegex = new Regex( Allow );
-        private static readonly Regex Rules = new Regex( string.Format( "{0}|{1}", Disallow, Allow ) );
+        private static readonly Regex Rules = new Regex( String.Format( "{0}|{1}", Disallow, Allow ) );
         private static ConcurrentQueue< Rule > aggregatedRules = new ConcurrentQueue< Rule >();
 
-        public static string SiteMap { get; private set; }
+        public static String SiteMap { get; private set; }
 
-        public static void Load( string robotsTxt, string userAgent = null ) {
-            if ( string.IsNullOrEmpty( robotsTxt ) ) {
+        public static void Load( String robotsTxt, String userAgent = null ) {
+            if ( String.IsNullOrEmpty( robotsTxt ) ) {
                 return;
             }
-            var allRulesList = new List< string >();
-            var botRulesList = new List< string >();
-            var currentAgents = new string[0];
+            var allRulesList = new List< String >();
+            var botRulesList = new List< String >();
+            var currentAgents = new String[0];
             robotsTxt = Regex.Replace( robotsTxt, @"\r\n|\n\r|\n|\r", "\r\n" );
-            var lines = new Queue< string >( robotsTxt.Split( new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
+            var lines = new Queue< String >( robotsTxt.Split( new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
             while ( lines.Any() ) {
                 SetSiteMap( lines );
                 var readAgents = lines.ReadAgents()
@@ -61,29 +61,29 @@ namespace SkyScraper {
                                                                        .Concat( allRulesList.AsRules() ) );
         }
 
-        public static bool PathIsAllowed( string path ) {
+        public static bool PathIsAllowed( String path ) {
             foreach ( var rule in aggregatedRules.Where( rule => rule.Regex.IsMatch( path ) ) ) {
                 return rule.IsAllowed;
             }
             return true;
         }
 
-        private static Regex AsRegexRule( this string input ) {
+        private static Regex AsRegexRule( this String input ) {
             input = input.Split( ' ' )[ 1 ];
             input = Regex.Escape( input );
             input = input.Replace( "\\*", ".*" );
             if ( !input.EndsWith( ".*" ) ) {
                 input += ".*";
             }
-            input = string.Format( "^{0}$", input );
+            input = String.Format( "^{0}$", input );
             return new Regex( input );
         }
 
-        private static IEnumerable< Rule > AsRules( this IEnumerable< string > rules ) {
+        private static IEnumerable< Rule > AsRules( this IEnumerable< String > rules ) {
             return rules.Select( x => new Rule( x.AsRegexRule(), AllowRegex.IsMatch( x ) ) );
         }
 
-        private static IEnumerable< string > ReadAgents( this Queue< string > lines ) {
+        private static IEnumerable< String > ReadAgents( this Queue< String > lines ) {
             while ( lines.Any() && lines.Peek()
                                         .StartsWith( "User-agent: " ) ) {
                 yield return lines.Dequeue()
@@ -91,7 +91,7 @@ namespace SkyScraper {
             }
         }
 
-        private static void SetSiteMap( this Queue< string > lines ) {
+        private static void SetSiteMap( this Queue< String > lines ) {
             if ( lines.Any() && lines.Peek()
                                      .StartsWith( "Sitemap: " ) ) {
                 SiteMap = lines.Dequeue()
