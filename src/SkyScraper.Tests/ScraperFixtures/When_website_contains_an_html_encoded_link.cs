@@ -18,41 +18,44 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_contains_an_html_encoded_link : ConcernForScraper {
-        private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private string page;
+        private readonly List< HtmlDoc > _htmlDocs = new List< HtmlDoc >();
+        private string _page;
 
         protected override void Context() {
             base.Context();
             this.Uri = new Uri( "http://test" );
-            this.page = @"<html>
+            this._page = @"<html>
                          <a href=""http://test/page1&amp;"">link1</a>
                          </html>";
             this.HttpClient.GetString( this.Uri )
-                .Returns( Task.Factory.StartNew( () => this.page ) );
+                .Returns( Task.Factory.StartNew( () => this._page ) );
             this.HttpClient.GetString( Arg.Is< Uri >( x => x != this.Uri ) )
                 .Returns( x => Task.Factory.StartNew( () => x.Arg< Uri >()
                                                              .PathAndQuery ) );
-            this.OnNext = x => this.htmlDocs.Add( x );
+            this.OnNext = x => this._htmlDocs.Add( x );
         }
 
         [Test]
         public void Then_htmldocs_should_contain_first_page() {
-            this.htmlDocs.Should()
+            this._htmlDocs.Should()
                 .Contain( x => x.Uri.ToString() == "http://test/page1&" && x.Html == "/page1&" );
         }
 
         [Test]
         public void Then_htmldocs_should_contain_home_page() {
-            this.htmlDocs.Should()
-                .Contain( x => x.Uri.ToString() == "http://test/" && x.Html == this.page );
+            this._htmlDocs.Should()
+                .Contain( x => x.Uri.ToString() == "http://test/" && x.Html == this._page );
         }
 
         [Test]
         public void Then_two_htmldocs_should_be_returned() {
-            this.htmlDocs.Count.Should()
+            this._htmlDocs.Count.Should()
                 .Be( 2 );
         }
     }

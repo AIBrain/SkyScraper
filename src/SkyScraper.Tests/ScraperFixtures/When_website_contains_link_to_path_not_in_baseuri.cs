@@ -18,6 +18,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_contains_link_to_path_not_in_baseuri : ConcernForScraper {
@@ -26,7 +29,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
         protected override void Context() {
             base.Context();
             this.Uri = new Uri( "http://test/foo/page1" );
-            var page = @"<html>
+            const string page = @"<html>
                          <a href=""/bar"">link1</a>
                          </html>";
             this.HttpClient.GetString( this.Uri )

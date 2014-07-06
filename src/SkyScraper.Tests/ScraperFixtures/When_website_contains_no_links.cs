@@ -18,6 +18,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_contains_no_links : ConcernForScraper {

@@ -18,6 +18,7 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using FluentAssertions;
     using NSubstitute;
     using NUnit.Framework;
 
