@@ -1,6 +1,4 @@
-﻿using System.Web.Http;
-
-namespace SkyScraper.TestWebsite
+﻿namespace SkyScraper.TestWebsite
 {
     public static class WebApiConfig
     {

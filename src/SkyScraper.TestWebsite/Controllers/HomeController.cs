@@ -1,6 +1,4 @@
-﻿using System.Web.Mvc;
-
-namespace SkyScraper.TestWebsite.Controllers
+﻿namespace SkyScraper.TestWebsite.Controllers
 {
     public class HomeController : Controller
     {

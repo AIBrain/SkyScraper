@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
-using System.Web.Mvc;
-using WebMatrix.WebData;
 using SkyScraper.TestWebsite.Models;
 
 namespace SkyScraper.TestWebsite.Filters
 {
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class InitializeSimpleMembershipAttribute : ActionFilterAttribute
     {

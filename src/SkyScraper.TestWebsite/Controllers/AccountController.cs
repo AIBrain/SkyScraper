@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Transactions;
-using System.Web.Mvc;
 using System.Web.Security;
-using Microsoft.Web.WebPages.OAuth;
-using WebMatrix.WebData;
 using SkyScraper.TestWebsite.Filters;
 using SkyScraper.TestWebsite.Models;
 

@@ -1,6 +1,4 @@
-﻿using System.Web.Mvc;
-
-namespace SkyScraper.TestWebsite
+﻿namespace SkyScraper.TestWebsite
 {
     public class FilterConfig
     {
