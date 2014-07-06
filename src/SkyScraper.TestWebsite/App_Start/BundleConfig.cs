@@ -1,5 +1,7 @@
 ﻿namespace SkyScraper.TestWebsite
 {
+    using System.Web.Optimization;
+
     public class BundleConfig
     {
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725

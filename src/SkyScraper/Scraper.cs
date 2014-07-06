@@ -1,137 +1,157 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+#region License
+// This notice must be kept visible in the source.
+// 
+// This section of source code belongs to Rick@AIBrain.Org unless otherwise specified.
+// Any unmodified sections of source code borrowed from other projects retain their original license and thanks goes to the Authors.
+// 
+// Royalties must be paid
+//    via PayPal (paypal@aibrain.org)
+//    via bitcoin (1Mad8TxTqxKnMiHuZxArFvX8BuFEB9nqX2)
+//    via litecoin (LeUxdU2w3o6pLZGVys5xpDZvvo8DUrjBp9)
+// 
+// Usage of the source code or compiled binaries is AS-IS.
+// 
+// "SkyScraper/Scraper.cs" was last cleaned by Rick on 2014/07/06 at 4:04 PM
+#endregion
 
-namespace SkyScraper
-{
+namespace SkyScraper {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using CsQuery;
 
-    public class Scraper : IScraper, IObservable<HtmlDoc>
-    {
-        readonly IHttpClient httpClient;
-        readonly IScrapedUris scrapedUris;
-        Uri baseUri;
-        DateTime? endDateTime;
+    public class Scraper : IScraper, IObservable<HtmlDoc> {
+        private readonly IHttpClient httpClient;
+        private readonly IScrapedUris scrapedUris;
+        private Uri baseUri;
+        private DateTime? endDateTime;
+
+        public Scraper( IHttpClient httpClient, IScrapedUris scrapedUris ) {
+            this.httpClient = httpClient;
+            this.scrapedUris = scrapedUris;
+            this.Observers = new List<IObserver<HtmlDoc>>();
+        }
+
         public event Action<Uri> OnScrape = delegate { };
         public event Action<Exception> OnHttpClientException = delegate { };
 
         public List<IObserver<HtmlDoc>> Observers { get; set; }
-        public TimeSpan TimeOut
-        {
-            set
-            {
-                endDateTime = DateTimeProvider.UtcNow + value;
-            }
-        }
+        public TimeSpan TimeOut { set { this.endDateTime = DateTimeProvider.UtcNow + value; } }
         public int? MaxDepth { private get; set; }
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
         public bool DisableRobotsProtocol { get; set; }
 
-        public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
-        {
-            this.httpClient = httpClient;
-            this.scrapedUris = scrapedUris;
-            Observers = new List<IObserver<HtmlDoc>>();
+        public IDisposable Subscribe( IObserver<HtmlDoc> observer ) {
+            this.Observers.Add( observer );
+            return new Unsubscriber( this.Observers, observer );
         }
 
-        public IDisposable Subscribe(IObserver<HtmlDoc> observer)
-        {
-            Observers.Add(observer);
-            return new Unsubscriber(Observers, observer);
+        public async Task Scrape( Uri uri ) {
+            this.baseUri = uri;
+
+            if ( !this.DisableRobotsProtocol ) {
+                var robotsUri = new Uri( uri.GetLeftPart( UriPartial.Authority ) + "/robots.txt" );
+                var robotsTxt = await this.httpClient.GetString( robotsUri );
+                Robots.Load( robotsTxt, this.httpClient.UserAgentName );
+            }
+            this.DoScrape( uri )
+                .Wait();
         }
 
-        public async Task Scrape(Uri uri)
-        {
-            baseUri = uri;
-
-            if (!DisableRobotsProtocol)
-            {
-                var robotsUri = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/robots.txt");
-                var robotsTxt = await httpClient.GetString(robotsUri);
-                Robots.Load(robotsTxt, httpClient.UserAgentName);
+        private async Task DoScrape( Uri uri ) {
+            this.OnScrape( uri );
+            if ( this.endDateTime.HasValue && DateTimeProvider.UtcNow > this.endDateTime ) {
+                return;
             }
-            DoScrape(uri).Wait();
-        }
-
-        async Task DoScrape(Uri uri)
-        {
-            OnScrape(uri);
-            if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
+            if ( !this.scrapedUris.TryAdd( uri ) ) {
                 return;
-            if (!scrapedUris.TryAdd(uri))
-                return;
-            if (!DisableRobotsProtocol && !Robots.PathIsAllowed(uri.PathAndQuery))
-                return;
-            var htmlDoc = new HtmlDoc { Uri = uri };
-            try
-            {
-                htmlDoc.Html = await httpClient.GetString(uri);
             }
-            catch (Exception exception)
-            {
-                OnHttpClientException(exception);
-            }
-            if (string.IsNullOrEmpty(htmlDoc.Html))
+            if ( !this.DisableRobotsProtocol && !Robots.PathIsAllowed( uri.PathAndQuery ) ) {
                 return;
-            if (!(ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
-                NotifyObservers(htmlDoc);
+            }
+            var htmlDoc = new HtmlDoc {
+                Uri = uri
+            };
+            try {
+                htmlDoc.Html = await this.httpClient.GetString( uri );
+            }
+            catch ( Exception exception ) {
+                this.OnHttpClientException( exception );
+            }
+            if ( string.IsNullOrEmpty( htmlDoc.Html ) ) {
+                return;
+            }
+            if ( !( this.ObserverLinkFilter != null && !this.ObserverLinkFilter.IsMatch( uri.ToString() ) ) ) {
+                this.NotifyObservers( htmlDoc );
+            }
 
-            var pageBase = htmlDoc.Uri.Segments.Last().Contains('.') ? htmlDoc.Uri.ToString().Substring(0, htmlDoc.Uri.ToString().LastIndexOf('/')) : htmlDoc.Uri.ToString();
-            if (!pageBase.EndsWith("/"))
+            var pageBase = htmlDoc.Uri.Segments.Last()
+                                  .Contains( '.' ) ? htmlDoc.Uri.ToString()
+                                                            .Substring( 0, htmlDoc.Uri.ToString()
+                                                                                  .LastIndexOf( '/' ) ) : htmlDoc.Uri.ToString();
+            if ( !pageBase.EndsWith( "/" ) ) {
                 pageBase += "/";
-            var pageBaseUri = new Uri(pageBase);
+            }
+            var pageBaseUri = new Uri( pageBase );
             CQ cq = htmlDoc.Html;
-            var links = cq["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
-            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri)).Where(x => x.ToString().StartsWith(baseUri.ToString()) && x.ToString().Length <= 2048);
-            if (IncludeLinks != null)
-                localLinks = localLinks.Where(x => IncludeLinks.IsMatch(x.ToString()));
-            if (IgnoreLinks != null)
-                localLinks = localLinks.Where(x => !IgnoreLinks.IsMatch(x.ToString()));
-            if (MaxDepth.HasValue)
-                localLinks = localLinks.Where(x => x.Segments.Length <= MaxDepth + 1);
-            var tasks = localLinks.Select(DoScrape).ToArray();
-            Task.WaitAll(tasks);
+            var links = cq[ "a" ].Select( x => x.GetAttribute( "href" ) )
+                                 .Where( x => x != null );
+            var localLinks = this.LocalLinks( links )
+                                 .Select( x => this.NormalizeLink( x, pageBaseUri ) )
+                                 .Where( x => x.ToString()
+                                               .StartsWith( this.baseUri.ToString() ) && x.ToString()
+                                                                                          .Length <= 2048 );
+            if ( this.IncludeLinks != null ) {
+                localLinks = localLinks.Where( x => this.IncludeLinks.IsMatch( x.ToString() ) );
+            }
+            if ( this.IgnoreLinks != null ) {
+                localLinks = localLinks.Where( x => !this.IgnoreLinks.IsMatch( x.ToString() ) );
+            }
+            if ( this.MaxDepth.HasValue ) {
+                localLinks = localLinks.Where( x => x.Segments.Length <= this.MaxDepth + 1 );
+            }
+            var tasks = localLinks.Select( this.DoScrape )
+                                  .ToArray();
+            Task.WaitAll( tasks );
         }
 
-        Uri NormalizeLink(string link, Uri pageBaseUri)
-        {
-            if (link.StartsWith("/"))
-                return new Uri(baseUri, link);
-            if (link.StartsWith(baseUri.ToString()))
-                return new Uri(link);
-            return new Uri(pageBaseUri, link);
+        private Uri NormalizeLink( string link, Uri pageBaseUri ) {
+            if ( link.StartsWith( "/" ) ) {
+                return new Uri( this.baseUri, link );
+            }
+            if ( link.StartsWith( this.baseUri.ToString() ) ) {
+                return new Uri( link );
+            }
+            return new Uri( pageBaseUri, link );
         }
 
-        void NotifyObservers(HtmlDoc htmlDoc)
-        {
-            Observers.ForEach(x => x.OnNext(htmlDoc));
+        private void NotifyObservers( HtmlDoc htmlDoc ) {
+            this.Observers.ForEach( x => x.OnNext( htmlDoc ) );
         }
 
-        IEnumerable<string> LocalLinks(IEnumerable<string> links)
-        {
-            return links.Select(WebUtility.HtmlDecode).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
+        private IEnumerable<string> LocalLinks( IEnumerable<string> links ) {
+            return links.Select( WebUtility.HtmlDecode )
+                        .Where( x => x.LinkIsLocal( this.baseUri.ToString() ) && x.LinkDoesNotContainAnchor() );
         }
 
-        class Unsubscriber : IDisposable
-        {
-            readonly IObserver<HtmlDoc> observer;
-            readonly List<IObserver<HtmlDoc>> observers;
+        private class Unsubscriber : IDisposable {
+            private readonly IObserver<HtmlDoc> observer;
+            private readonly List<IObserver<HtmlDoc>> observers;
 
-            public Unsubscriber(List<IObserver<HtmlDoc>> observers, IObserver<HtmlDoc> observer)
-            {
+            public Unsubscriber( List<IObserver<HtmlDoc>> observers, IObserver<HtmlDoc> observer ) {
                 this.observers = observers;
                 this.observer = observer;
             }
 
-            public void Dispose()
-            {
-                if (observer != null && observers.Contains(observer))
-                    observers.Remove(observer);
+            public void Dispose() {
+                if ( this.observer != null && this.observers.Contains( this.observer ) ) {
+                    this.observers.Remove( this.observer );
+                }
             }
         }
     }

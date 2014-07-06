@@ -18,6 +18,8 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_has_two_identical_links : ConcernForScraper {

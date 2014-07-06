@@ -28,8 +28,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
         }
 
         protected override Scraper CreateClassUnderTest() {
-            this.SUT = new Scraper( this.HttpClient, new ScrapedUrisDictionary() );
-            this.SUT.DisableRobotsProtocol = true;
+            this.SUT = new Scraper( this.HttpClient, new ScrapedUrisDictionary() ) {
+                                                                                       DisableRobotsProtocol = true
+                                                                                   };
             this.SUT.Subscribe( this.OnNext );
             return this.SUT;
         }

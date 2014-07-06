@@ -19,6 +19,9 @@ namespace SkyScraper.Tests.ScraperFixtures {
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using FluentAssertions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     internal class When_website_returns_exception_from_page : ConcernForScraper {
