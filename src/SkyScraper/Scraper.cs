@@ -11,7 +11,7 @@
 // 
 // Usage of the source code or compiled binaries is AS-IS.
 // 
-// "SkyScraper/Scraper.cs" was last cleaned by Rick on 2014/07/06 at 4:09 PM
+// "SkyScraper/Scraper.cs" was last cleaned by Rick on 2014/07/06 at 4:36 PM
 #endregion
 
 namespace SkyScraper {
@@ -23,7 +23,7 @@ namespace SkyScraper {
     using System.Threading.Tasks;
     using CsQuery;
 
-    public class Scraper : IScraper, IObservable<HtmlDoc> {
+    public class Scraper : IScraper, IObservable< HtmlDoc > {
         private readonly IHttpClient _httpClient;
         private readonly IScrapedUris _scrapedUris;
         private Uri _baseUri;
@@ -32,13 +32,13 @@ namespace SkyScraper {
         public Scraper( IHttpClient httpClient, IScrapedUris scrapedUris ) {
             this._httpClient = httpClient;
             this._scrapedUris = scrapedUris;
-            this.Observers = new List<IObserver<HtmlDoc>>();
+            this.Observers = new List< IObserver< HtmlDoc > >();
         }
 
-        public event Action<Uri> OnScrape = delegate { };
-        public event Action<Exception> OnHttpClientException = delegate { };
+        public event Action< Uri > OnScrape = delegate { };
+        public event Action< Exception > OnHttpClientException = delegate { };
 
-        public List<IObserver<HtmlDoc>> Observers { get; set; }
+        public List< IObserver< HtmlDoc > > Observers { get; set; }
         public TimeSpan TimeOut { set { this._endDateTime = DateTimeProvider.UtcNow + value; } }
         public int? MaxDepth { private get; set; }
         public Regex IgnoreLinks { private get; set; }
@@ -46,7 +46,7 @@ namespace SkyScraper {
         public Regex ObserverLinkFilter { private get; set; }
         public bool DisableRobotsProtocol { get; set; }
 
-        public IDisposable Subscribe( IObserver<HtmlDoc> observer ) {
+        public IDisposable Subscribe( IObserver< HtmlDoc > observer ) {
             this.Observers.Add( observer );
             return new Unsubscriber( this.Observers, observer );
         }
@@ -75,8 +75,8 @@ namespace SkyScraper {
                 return;
             }
             var htmlDoc = new HtmlDoc {
-                Uri = uri
-            };
+                                          Uri = uri
+                                      };
             try {
                 htmlDoc.Html = await this._httpClient.GetString( uri );
             }
@@ -134,16 +134,16 @@ namespace SkyScraper {
             this.Observers.ForEach( observer => observer.OnNext( htmlDoc ) );
         }
 
-        private IEnumerable<string> LocalLinks( IEnumerable<string> links ) {
+        private IEnumerable< string > LocalLinks( IEnumerable< string > links ) {
             return links.Select( WebUtility.HtmlDecode )
                         .Where( s => s.LinkIsLocal( this._baseUri.ToString() ) && s.LinkDoesNotContainAnchor() );
         }
 
         private class Unsubscriber : IDisposable {
-            private readonly IObserver<HtmlDoc> _observer;
-            private readonly List<IObserver<HtmlDoc>> _observers;
+            private readonly IObserver< HtmlDoc > _observer;
+            private readonly List< IObserver< HtmlDoc > > _observers;
 
-            public Unsubscriber( List<IObserver<HtmlDoc>> observers, IObserver<HtmlDoc> observer ) {
+            public Unsubscriber( List< IObserver< HtmlDoc > > observers, IObserver< HtmlDoc > observer ) {
                 this._observers = observers;
                 this._observer = observer;
             }

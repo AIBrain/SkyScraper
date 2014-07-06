@@ -1,23 +1,20 @@
 ﻿#region License
-
 // This notice must be kept visible in the source.
-//
+// 
 // This section of source code belongs to Rick@AIBrain.Org unless otherwise specified.
 // Any unmodified sections of source code borrowed from other projects retain their original license and thanks goes to the Authors.
-//
+// 
 // Royalties must be paid
 //    via PayPal (paypal@aibrain.org)
 //    via bitcoin (1Mad8TxTqxKnMiHuZxArFvX8BuFEB9nqX2)
 //    via litecoin (LeUxdU2w3o6pLZGVys5xpDZvvo8DUrjBp9)
-//
+// 
 // Usage of the source code or compiled binaries is AS-IS.
-//
-// "SkyScraper/Robots.cs" was last cleaned by Rick on 2014/07/06 at 3:56 PM
-
-#endregion License
+// 
+// "SkyScraper/Robots.cs" was last cleaned by Rick on 2014/07/06 at 4:36 PM
+#endregion
 
 namespace SkyScraper {
-
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -29,7 +26,7 @@ namespace SkyScraper {
         private const string Disallow = @"^Disallow:\s";
         private static readonly Regex AllowRegex = new Regex( Allow );
         private static readonly Regex Rules = new Regex( string.Format( "{0}|{1}", Disallow, Allow ) );
-        private static ConcurrentQueue<Rule> aggregatedRules = new ConcurrentQueue<Rule>();
+        private static ConcurrentQueue< Rule > aggregatedRules = new ConcurrentQueue< Rule >();
 
         public static string SiteMap { get; private set; }
 
@@ -37,11 +34,11 @@ namespace SkyScraper {
             if ( string.IsNullOrEmpty( robotsTxt ) ) {
                 return;
             }
-            var allRulesList = new List<string>();
-            var botRulesList = new List<string>();
-            var currentAgents = new string[ 0 ];
+            var allRulesList = new List< string >();
+            var botRulesList = new List< string >();
+            var currentAgents = new string[0];
             robotsTxt = Regex.Replace( robotsTxt, @"\r\n|\n\r|\n|\r", "\r\n" );
-            var lines = new Queue<string>( robotsTxt.Split( new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
+            var lines = new Queue< string >( robotsTxt.Split( new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries ) );
             while ( lines.Any() ) {
                 SetSiteMap( lines );
                 var readAgents = lines.ReadAgents()
@@ -60,7 +57,7 @@ namespace SkyScraper {
                     }
                 }
             }
-            aggregatedRules = new ConcurrentQueue<Rule>( botRulesList.AsRules()
+            aggregatedRules = new ConcurrentQueue< Rule >( botRulesList.AsRules()
                                                                        .Concat( allRulesList.AsRules() ) );
         }
 
@@ -82,11 +79,11 @@ namespace SkyScraper {
             return new Regex( input );
         }
 
-        private static IEnumerable<Rule> AsRules( this IEnumerable<string> rules ) {
+        private static IEnumerable< Rule > AsRules( this IEnumerable< string > rules ) {
             return rules.Select( x => new Rule( x.AsRegexRule(), AllowRegex.IsMatch( x ) ) );
         }
 
-        private static IEnumerable<string> ReadAgents( this Queue<string> lines ) {
+        private static IEnumerable< string > ReadAgents( this Queue< string > lines ) {
             while ( lines.Any() && lines.Peek()
                                         .StartsWith( "User-agent: " ) ) {
                 yield return lines.Dequeue()
@@ -94,7 +91,7 @@ namespace SkyScraper {
             }
         }
 
-        private static void SetSiteMap( this Queue<string> lines ) {
+        private static void SetSiteMap( this Queue< string > lines ) {
             if ( lines.Any() && lines.Peek()
                                      .StartsWith( "Sitemap: " ) ) {
                 SiteMap = lines.Dequeue()
@@ -103,7 +100,6 @@ namespace SkyScraper {
         }
 
         private class Rule {
-
             public Rule( Regex regex, bool isAllowed ) {
                 this.Regex = regex;
                 this.IsAllowed = isAllowed;

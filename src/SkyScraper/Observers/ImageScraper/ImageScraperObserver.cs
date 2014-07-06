@@ -1,45 +1,62 @@
-using System;
-using System.Collections.Concurrent;
-using System.Linq;
+#region License
+// This notice must be kept visible in the source.
+// 
+// This section of source code belongs to Rick@AIBrain.Org unless otherwise specified.
+// Any unmodified sections of source code borrowed from other projects retain their original license and thanks goes to the Authors.
+// 
+// Royalties must be paid
+//    via PayPal (paypal@aibrain.org)
+//    via bitcoin (1Mad8TxTqxKnMiHuZxArFvX8BuFEB9nqX2)
+//    via litecoin (LeUxdU2w3o6pLZGVys5xpDZvvo8DUrjBp9)
+// 
+// Usage of the source code or compiled binaries is AS-IS.
+// 
+// "SkyScraper/ImageScraperObserver.cs" was last cleaned by Rick on 2014/07/06 at 4:36 PM
+#endregion
 
-namespace SkyScraper.Observers.ImageScraper
-{
+namespace SkyScraper.Observers.ImageScraper {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Linq;
     using CsQuery;
 
-    public class ImageScraperObserver : IObserver<HtmlDoc>
-    {
-        readonly ConcurrentDictionary<string, string> downloadedImages = new ConcurrentDictionary<string, string>();
-        readonly IFileWriter fileWriter;
-        readonly IHttpClient httpClient;
+    public class ImageScraperObserver : IObserver< HtmlDoc > {
+        private readonly ConcurrentDictionary< string, string > downloadedImages = new ConcurrentDictionary< string, string >();
+        private readonly IFileWriter fileWriter;
+        private readonly IHttpClient httpClient;
 
-        public ImageScraperObserver(IHttpClient httpClient, IFileWriter fileWriter)
-        {
+        public ImageScraperObserver( IHttpClient httpClient, IFileWriter fileWriter ) {
             this.httpClient = httpClient;
             this.fileWriter = fileWriter;
         }
 
-        public void OnNext(HtmlDoc htmlDoc)
-        {
-            var baseUri = new Uri(htmlDoc.Uri.GetLeftPart(UriPartial.Path));
-            if (baseUri.Segments.Last().Contains('.'))
-                baseUri = new Uri(baseUri.ToString().Substring(0, baseUri.ToString().LastIndexOf('/')));
+        public void OnNext( HtmlDoc htmlDoc ) {
+            var baseUri = new Uri( htmlDoc.Uri.GetLeftPart( UriPartial.Path ) );
+            if ( baseUri.Segments.Last()
+                        .Contains( '.' ) ) {
+                baseUri = new Uri( baseUri.ToString()
+                                          .Substring( 0, baseUri.ToString()
+                                                                .LastIndexOf( '/' ) ) );
+            }
             CQ html = htmlDoc.Html;
-            var imgSrcs = html["img"].Select(x => x.GetAttribute("src")).Where(x => x.LinkIsLocal(baseUri.ToString()));
-            var downloadUris = imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? new Uri(imgSrc) : new Uri(baseUri, imgSrc));
-            downloadUris.AsParallel().ForAll(DownloadImage);
+            var imgSrcs = html[ "img" ].Select( x => x.GetAttribute( "src" ) )
+                                       .Where( x => x.LinkIsLocal( baseUri.ToString() ) );
+            var downloadUris = imgSrcs.Select( imgSrc => Uri.IsWellFormedUriString( imgSrc, UriKind.Absolute ) ? new Uri( imgSrc ) : new Uri( baseUri, imgSrc ) );
+            downloadUris.AsParallel()
+                        .ForAll( this.DownloadImage );
         }
 
-        public void OnError(Exception error) { }
+        public void OnError( Exception error ) { }
 
         public void OnCompleted() { }
 
-        async void DownloadImage(Uri uri)
-        {
+        private async void DownloadImage( Uri uri ) {
             var fileName = uri.Segments.Last();
-            if (!downloadedImages.TryAdd(fileName, null))
+            if ( !this.downloadedImages.TryAdd( fileName, null ) ) {
                 return;
-            var imgBytes = await httpClient.GetByteArray(uri);
-            fileWriter.Write(fileName, imgBytes);
+            }
+            var imgBytes = await this.httpClient.GetByteArray( uri );
+            this.fileWriter.Write( fileName, imgBytes );
         }
     }
 }

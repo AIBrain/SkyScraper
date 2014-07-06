@@ -11,7 +11,7 @@
 // 
 // Usage of the source code or compiled binaries is AS-IS.
 // 
-// "SkyScraper/HtmlDoc.cs" was last cleaned by Rick on 2014/07/06 at 4:07 PM
+// "SkyScraper/HtmlDoc.cs" was last cleaned by Rick on 2014/07/06 at 4:36 PM
 #endregion
 
 namespace SkyScraper {
