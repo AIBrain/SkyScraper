@@ -24,21 +24,21 @@ namespace SkyScraper.Tests.ScraperFixtures {
 
     [TestFixture]
     internal class When_httpclient_returns_null : ConcernForScraper {
-        private readonly List< HtmlDoc > htmlDocs = new List< HtmlDoc >();
-        private String page;
+        private readonly List< HtmlDoc > _htmlDocs = new List< HtmlDoc >();
+        private String _page;
 
         protected override void Context() {
             base.Context();
             this.Uri = new Uri( "http://test" );
-            this.page = null;
+            this._page = null;
             this.HttpClient.GetString( this.Uri )
-                .Returns( Task.Factory.StartNew( () => this.page ) );
-            this.OnNext = x => this.htmlDocs.Add( x );
+                .Returns( Task.Factory.StartNew( () => this._page ) );
+            this.OnNext = x => this._htmlDocs.Add( x );
         }
 
         [Test]
         public void Then_no_htmldoc_should_be_returned() {
-            this.htmlDocs.Should()
+            this._htmlDocs.Should()
                 .BeEmpty();
         }
     }
